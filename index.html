@@ -164,6 +164,40 @@
     background: #8a8a9a;
     border-radius: 2px;
   }
+
+ /* دکمه صدا */
+.sound-btn {
+  margin-top: 25px;
+  font-family: 'Vazirmatn', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: #f5e28a;
+  cursor: pointer;
+  padding: 10px 24px;
+  border-radius: 50px;
+  background: rgba(201,162,39,0.08);
+  border: 1.5px solid rgba(201,162,39,0.4);
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  user-select: none;
+}
+
+.sound-btn:hover {
+  color: #fff;
+  border-color: #c9a227;
+  background: rgba(201,162,39,0.25);
+  box-shadow: 0 0 20px rgba(201,162,39,0.4);
+}
+
+.sound-btn.playing {
+  color: #0f0f17;
+  background: linear-gradient(145deg, #f5e28a, #c9a227);
+  border-color: #f5e28a;
+  box-shadow: 0 0 25px rgba(201,162,39,0.7);
+}
+ 
 </style>
 </head>
 <body>
@@ -186,6 +220,15 @@
   </div>
 
   <div class="date-display" id="dateDisplay">در حال بارگذاری...</div>
+ <button class="sound-btn" id="soundBtn">
+  <span class="icon" id="soundIcon">🔇</span>
+  <span id="soundText">پخش صدا</span>
+</button>
+
+<!-- فایل صوتی پس‌زمینه -->
+<audio id="bgAudio" loop preload="auto">
+  <source src="ambient.mp3" type="audio/mpeg">
+</audio>
 
 <script>
 (function() {
@@ -287,6 +330,32 @@
     }
   }
 
+ /* ============== صدا پس‌زمینه ============== */
+var audio = document.getElementById('bgAudio');
+var soundBtn = document.getElementById('soundBtn');
+var soundIcon = document.getElementById('soundIcon');
+var soundText = document.getElementById('soundText');
+
+audio.volume = 0.4; // حجم صدا (۰ تا ۱)
+
+soundBtn.addEventListener('click', function() {
+  if (audio.paused) {
+    audio.play().then(function() {
+      soundIcon.textContent = '🔊';
+      soundText.textContent = 'قطع صدا';
+      soundBtn.classList.add('playing');
+    }).catch(function(err) {
+      console.log('خطا در پخش صدا:', err);
+      alert('فایل صوتی پیدا نشد. لطفاً ambient.mp3 را کنار index.html قرار دهید.');
+    });
+  } else {
+    audio.pause();
+    soundIcon.textContent = '🔇';
+    soundText.textContent = 'پخش صدا';
+    soundBtn.classList.remove('playing');
+  }
+});
+ 
   // شروع
   updateClock();
   updateDate();
